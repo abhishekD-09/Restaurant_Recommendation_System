@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inference Insights | SmartDining AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style type="text/tailwindcss">
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #020617;
+        }
+
+        /* Modernized Data Table for Dark Mode */
+        .custom-table { @apply min-w-full text-left w-full border-separate border-spacing-y-2 px-4; }
+        .custom-table thead { @apply sticky top-0 bg-[#020617] z-20; }
+        .custom-table th { @apply px-6 py-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]; }
+        .custom-table tbody { @apply space-y-4; }
+        
+        /* Table Row Styling */
+        .custom-table tbody tr { 
+            @apply bg-slate-900/50 border border-white/5 rounded-xl transition-all duration-300; 
+            box-shadow: 0 4px 12px -2px rgba(0,0,0,0.3);
+        }
+        .custom-table tbody tr:hover { 
+            @apply bg-indigo-900/20 border-indigo-500/30 -translate-y-0.5;
+        }
+
+        .custom-table td { @apply px-6 py-5 text-sm text-slate-300 first:rounded-l-xl last:rounded-r-xl border-t border-b border-white/5; }
+        .custom-table th[scope="row"] { @apply font-bold text-white; }
+
+        /* Glassmorphism Effect */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body class="text-slate-300 min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] -z-10"></div>
+    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-cyan-600/10 rounded-full blur-[100px] -z-10"></div>
+
+    <nav class="relative z-10 px-8 py-8 flex justify-between items-center max-w-7xl mx-auto w-full">
+        <a href="/" class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-[0_0_20px_rgba(79,70,229,0.4)]">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+            </div>
+            <span class="text-xl font-black tracking-tighter text-white uppercase italic">Smart<span class="text-indigo-500">AI</span></span>
+        </a>
+        <div class="flex gap-6">
+            <a href="/" class="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-all">Overview</a>
+            <a href="/web" class="text-xs font-bold uppercase tracking-widest text-indigo-400 border-b border-indigo-400">Inference</a>
+        </div>
+    </nav>
+
+    <main class="relative z-10 flex-grow py-12 px-6 max-w-7xl mx-auto w-full">
+        
+        <div class="mb-12 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            <div class="space-y-3">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                    <span class="h-1.5 w-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+                    Computation Successful
+                </div>
+                <h2 class="text-4xl md:text-5xl font-black text-white tracking-tighter">Vectorized Matches</h2>
+                <p class="text-slate-500 text-lg">Query: <span class="text-cyan-400 font-mono">"{{ search_term }}"</span></p>
+            </div>
+            
+            <div class="flex gap-4">
+                <a href="/web" class="group flex items-center px-6 py-3 text-xs font-black uppercase tracking-widest text-white bg-slate-800 rounded-lg hover:bg-slate-700 transition-all border border-white/5">
+                    <svg class="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Adjust Query
+                </a>
+            </div>
+        </div>
+
+        <div class="glass-card rounded-3xl p-2 md:p-6 shadow-2xl overflow-hidden">
+            <div class="overflow-x-auto">
+                {{ keyword | safe }}
+            </div>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-card rounded-2xl p-6 border-l-4 border-indigo-500">
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Algorithm</p>
+                <p class="text-white font-semibold">TF-IDF Weighted</p>
+            </div>
+            <div class="glass-card rounded-2xl p-6 border-l-4 border-cyan-500">
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Similarity Metric</p>
+                <p class="text-white font-semibold">Cosine Similarity</p>
+            </div>
+            <div class="glass-card rounded-2xl p-6 border-l-4 border-emerald-500">
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Status</p>
+                <p class="text-white font-semibold">Verified Output</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-auto py-10 border-t border-white/5 text-center">
+        <p class="text-[10px] font-bold text-slate-600 uppercase tracking-[0.4em]">Neural Dining Engine &copy; 2026</p>
+    </footer>
+
+</body>
+</html>

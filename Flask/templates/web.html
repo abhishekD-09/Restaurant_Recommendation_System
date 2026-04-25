@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inference Engine | SmartDining AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style type="text/tailwindcss">
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #020617;
+        }
+
+        /* Redesigned Autocomplete for Dark Mode */
+        .autocomplete-items {
+            @apply absolute z-50 mt-2 left-0 right-0 bg-[#0f172a] border border-white/10 rounded-xl overflow-hidden shadow-2xl;
+            max-height: 280px;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+        }
+        
+        .autocomplete-items div {
+            @apply px-5 py-3 cursor-pointer text-slate-400 text-sm border-b border-white/5 transition-all;
+        }
+        
+        .autocomplete-items div:hover {
+            @apply bg-indigo-600/20 text-indigo-300;
+        }
+        
+        .autocomplete-active {
+            @apply bg-indigo-600 text-white font-bold !important;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Custom Scrollbar for dropdown */
+        .autocomplete-items::-webkit-scrollbar { width: 4px; }
+        .autocomplete-items::-webkit-scrollbar-track { background: transparent; }
+        .autocomplete-items::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-slate-300 min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <div class="absolute inset-0 z-0 opacity-20 pointer-events-none" 
+         style="background-image: linear-gradient(#1e293b 1px, transparent 1px), linear-gradient(90deg, #1e293b 1px, transparent 1px); background-size: 40px 40px;">
+    </div>
+
+    <nav class="relative z-10 px-8 py-8 flex justify-between items-center max-w-7xl mx-auto w-full">
+        <a href="/" class="flex items-center gap-3 group">
+            <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-[0_0_20px_rgba(79,70,229,0.4)] group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+            </div>
+            <span class="text-xl font-black tracking-tighter text-white uppercase italic">Smart<span class="text-indigo-500">AI</span></span>
+        </a>
+        <div class="flex gap-8">
+            <a href="/" class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-all">Portal Home</a>
+            <a href="/web" class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400 border-b-2 border-indigo-400 pb-1">Inference Engine</a>
+        </div>
+    </nav>
+
+    <main class="relative z-10 flex-grow flex flex-col items-center justify-center px-6">
+        <div class="w-full max-w-2xl">
+            
+            <div class="text-center mb-10">
+                <h1 class="text-4xl md:text-5xl font-black text-white tracking-tighter mb-4">
+                    Compute <span class="text-indigo-500 underline decoration-indigo-500/30 underline-offset-8">Similarities</span>
+                </h1>
+                <p class="text-slate-500 font-medium">Initialize the TF-IDF engine by specifying a reference entity.</p>
+            </div>
+
+            <div class="glass-panel rounded-[2rem] p-8 md:p-12 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)]">
+                <form action="/result" method="POST" class="space-y-8" autocomplete="off" id="search-form">
+                    
+                    <div class="relative">
+                        <label for="output" class="flex items-center gap-2 text-[10px] font-black text-indigo-400 uppercase tracking-[0.25em] mb-4">
+                            <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                            Target Identifier
+                        </label>
+                        
+                        <div class="relative" id="autocomplete-container">
+                            <div class="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                            </div>
+                            
+                            <input type="text" name="output" id="output" 
+                                placeholder="Search restaurant database..." required
+                                class="block w-full pl-14 pr-6 py-5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-600 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-lg font-semibold">
+                            
+                            <div id="suggestions" class="autocomplete-items hidden"></div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="group relative w-full overflow-hidden px-6 py-5 bg-indigo-600 text-white rounded-2xl transition-all duration-300 hover:bg-indigo-500 shadow-[0_20px_40px_-10px_rgba(79,70,229,0.4)]">
+                        <div class="relative z-10 flex items-center justify-center gap-3">
+                            <span class="text-xs font-black uppercase tracking-[0.3em]">Run Inference Model</span>
+                            <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </div>
+                    </button>
+                </form>
+            </div>
+
+            <p class="mt-8 text-center text-[10px] font-bold text-slate-600 uppercase tracking-widest">
+                System utilizes Cosine Similarity via Scikit-Learn
+            </p>
+        </div>
+    </main>
+
+    <script>
+        const inputField = document.getElementById('output');
+        const suggestionsBox = document.getElementById('suggestions');
+        let currentFocus = -1; 
+
+        inputField.addEventListener('input', async function() {
+            const searchTerm = this.value;
+            currentFocus = -1; 
+
+            if (!searchTerm) {
+                closeAllLists();
+                return;
+            }
+
+            try {
+                // Keep your existing fetch logic
+                const response = await fetch(`/autocomplete?term=${encodeURIComponent(searchTerm)}`);
+                const matches = await response.json();
+
+                closeAllLists();
+
+                if (matches.length > 0) {
+                    suggestionsBox.classList.remove('hidden');
+
+                    matches.forEach((match) => {
+                        const div = document.createElement('div');
+                        const regex = new RegExp(`(${searchTerm})`, "gi");
+                        div.innerHTML = match.replace(regex, "<span class='text-white font-bold'>$1</span>");
+                        
+                        div.addEventListener('click', function() {
+                            inputField.value = match;
+                            closeAllLists();
+                        });
+                        suggestionsBox.appendChild(div);
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching suggestions:", error);
+            }
+        });
+
+        // Keyboard navigation (keep your existing robust logic)
+        inputField.addEventListener("keydown", function(e) {
+            let items = suggestionsBox.getElementsByTagName("div");
+            if (suggestionsBox.classList.contains('hidden') || items.length === 0) return;
+
+            if (e.keyCode == 40) { // Down
+                currentFocus++;
+                addActive(items);
+                scrollToItem(items);
+            } else if (e.keyCode == 38) { // Up
+                currentFocus--;
+                addActive(items);
+                scrollToItem(items);
+            } else if (e.keyCode == 13) { // Enter
+                if (currentFocus > -1) {
+                    e.preventDefault(); 
+                    if (items[currentFocus]) items[currentFocus].click();
+                }
+            }
+        });
+
+        function addActive(items) {
+            if (!items) return false;
+            removeActive(items);
+            if (currentFocus >= items.length) currentFocus = 0;
+            if (currentFocus < 0) currentFocus = (items.length - 1);
+            items[currentFocus].classList.add("autocomplete-active");
+        }
+
+        function removeActive(items) {
+            for (let i = 0; i < items.length; i++) {
+                items[i].classList.remove("autocomplete-active");
+            }
+        }
+
+        function scrollToItem(items) {
+            if(items[currentFocus]) {
+                items[currentFocus].scrollIntoView({ block: "nearest", behavior: "smooth" });
+            }
+        }
+
+        function closeAllLists() {
+            suggestionsBox.innerHTML = '';
+            suggestionsBox.classList.add('hidden');
+        }
+
+        document.addEventListener('click', function(e) {
+            if (e.target !== inputField) closeAllLists();
+        });
+    </script>
+</body>
+</html>
